@@ -15,12 +15,12 @@ const commonConfig = {
 // If it's anything else, we'll use the same args as if it were a search page, just in case
 const pathPrefixConfigs = {
   '/sch/': {
-    childClassName: 's-item__localDelivery',
+    childQuerySelector: '.s-item__localDelivery, .s-item__localDeliveryWithDistance',
     filter: (matches) => matches,
     ...commonConfig
   },
   '/b/': {
-    childClassName: 's-item__delivery-options s-item__deliveryOptions',
+    childQuerySelector: '.s-item__delivery-options.s-item__deliveryOptions',
     filter: makeInnerTextFilter('collectionInPerson', 'Collection in person'),
     ...commonConfig
   }
@@ -211,8 +211,8 @@ function waitForElm (selector) {
 }
 
 function toggleAlreadyLoadedElements (hidden, c) {
-  log("Toggling already loaded elements by name:", c.childClassName)
-  const localDeliveryElements = c.filter(document.getElementsByClassName(c.childClassName))
+  log("Toggling already loaded elements by name:", c.childQuerySelector)
+  const localDeliveryElements = c.filter(document.querySelectorAll(c.childQuerySelector))
   for (const i of localDeliveryElements) {
     switchGivenElementsParent(i, hidden, c.itemParentClassName)
   }
@@ -235,7 +235,7 @@ function handleLoadingElements (hidden, c) {
     log("Body loaded, but document might not be ready yet, setting up watcher for new elements...")
     const observer = new MutationObserver((mutations) => {
       mutations.forEach(mutation => {
-        if (mutation?.target?.className?.includes && mutation?.target?.className?.includes(c.childClassName) && c.filter(mutation.target)) {
+        if (mutation?.target?.matches && mutation?.target?.matches(c.childQuerySelector) && c.filter(mutation.target)) {
           switchGivenElementsParent(mutation.target, hidden)
         }
       })
