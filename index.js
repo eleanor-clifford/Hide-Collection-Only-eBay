@@ -236,7 +236,7 @@ function handleLoadingElements (hidden, c) {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach(mutation => {
         if (mutation?.target?.matches && mutation?.target?.matches(c.childQuerySelector) && c.filter(mutation.target)) {
-          switchGivenElementsParent(mutation.target, hidden)
+          switchGivenElementsParent(mutation.target, hidden, c.itemParentClassName)
         }
       })
       if (document.readyState === 'complete') {
